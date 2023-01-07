@@ -24,7 +24,10 @@ public class App
             System.out.println("2. Odczytaj obiekt Person");
             System.out.println("3. Zaktualizuj obiekt Person");
             System.out.println("4. Usuń obiekt Person");
-            System.out.println("5. Wyjście");
+            System.out.println("5. Pobierz zart o Chucku Norrisie i dodaj go do uzytkownika");
+            System.out.println("6. Wyswietl zart o Chucku Norrisie danego uzytkownika");
+            System.out.println("7. Usun ulubiony zart uzytkownika");
+            System.out.println("8. Wyjście");
             System.out.print("> ");
 
             int option = scanner.nextInt();
@@ -49,6 +52,11 @@ public class App
                     username = scanner.nextLine();
                     p = new Person(-1, username, "", "", false);
                     p.read(dbc);
+                    String joke2 = Person.getJoke(dbc, username);
+                    if (!joke2.equals("")) {
+                        System.out.print("Ulubiony zart uzytkownika: " + joke2);
+                    }
+
                     break;
                 case 3:
                     System.out.print("Podaj nazwę użytkownika: ");
@@ -70,6 +78,45 @@ public class App
                     p.delete(dbc);
                     break;
                 case 5:
+                    boolean userLikeJoke = false;
+                    String joke = "";
+                    while (!userLikeJoke) {
+                        joke = ChuckNorrisJokeGetter.getJoke();
+                        System.out.print("Proponowany zart o Chucku Norrisie: " + joke);
+                        joke = joke.replace("'", "");
+                        System.out.print("\nPodoba Ci sie zart? [tak/nie]");
+                        String jokeApproval = scanner.nextLine();
+                        if (jokeApproval.equals("tak")) {
+                            userLikeJoke = true;
+                        }
+                    }
+                    System.out.print("\nPodaj nazwę użytkownika, ktoremu dodac zart: \n");
+                    username = scanner.nextLine();
+                    if (!Person.getJoke(dbc, username).equals("")) {
+                        System.out.print("\nUzytkownik posiada juz ulubiony zart, czy chcesz go zmienic?\n [tak/nie]");
+                        String updateApproval = scanner.nextLine();
+                        if (updateApproval.equals("tak")) {
+                            Person.updateJoke(dbc, joke, username);
+                        } else {
+                            break;
+                        }
+                    }
+                    Person.addJoke(dbc, joke, username);
+                    System.out.print("\nPZart dodany.");
+                    break;
+                case 6:
+                    System.out.print("\nPodaj nazwę użytkownika, ktorego chcesz wyswietlic ulubiony zart: \n");
+                    username = scanner.nextLine();
+                    String favoriteJoke = Person.getJoke(dbc, username);
+                    System.out.println("\nUlubiony zart uzytkownika " + username + ": " + favoriteJoke);
+                    break;
+                case 7:
+                    System.out.print("\nPodaj nazwę użytkownika, ktorego chcesz wyswietlic ulubiony zart: \n");
+                    username = scanner.nextLine();
+                    Person.deleteJoke(dbc, username);
+                    System.out.println("\nUsuniety zart uzytkownika " + username);
+                    break;
+                case 8:
                     quit = true;
                     break;
             }

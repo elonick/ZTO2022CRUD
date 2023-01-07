@@ -55,4 +55,36 @@ public class Person {
         int count = dbc.executeDelete(sql);
         System.out.println("Usunięto " + count + " rekordów.");
     }
+
+    public static void addJoke(main.java.org.example.DatabaseConnector dbc, String joke, String username) {
+        joke = joke.replace("'", "");
+        String insert = "Insert into jokes values ('" +
+                joke + "', '" +
+                username + "')";
+        dbc.executeInsert(insert);
+    }
+
+    public static String getJoke(main.java.org.example.DatabaseConnector dbc, String username) throws SQLException {
+        String sql = "SELECT * FROM jokes WHERE username = '" + username + "'";
+        ResultSet rs = dbc.executeSelect(sql);
+        String joke = "";
+        while (rs.next()) {
+            joke = rs.getString("joke");
+            // przetwarzanie obiektu Person
+            //System.out.println("joke: " + joke + ", username: " + username);
+        }
+        return joke;
+    }
+
+    public static void updateJoke(main.java.org.example.DatabaseConnector dbc, String joke, String username) {
+        String update = "UPDATE jokes SET joke = '" + joke + "' WHERE username = '" + username + "'";
+        int count = dbc.executeUpdate(update);
+        System.out.println("Zmodyfikowano " + count + " rekordów.");
+    }
+
+    public static void deleteJoke(main.java.org.example.DatabaseConnector dbc, String username) {
+        String delete = "DELETE FROM jokes WHERE username = '" + username + "'";
+        int count = dbc.executeDelete(delete);
+        System.out.println("Usunięto " + count + " rekordów.");
+    }
 }
